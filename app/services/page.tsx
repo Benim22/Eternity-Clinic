@@ -13,11 +13,14 @@ import { useState, useEffect } from "react"
 export default function ServicesPage() {
   const { t } = useTranslation()
   const [showScrollTop, setShowScrollTop] = useState(false)
+  const [isClient, setIsClient] = useState(false)
 
   const servicesRef = useRef<HTMLDivElement>(null)
-  const isServicesInView = useInView(servicesRef, { once: true, amount: 0.1 })
+  const isServicesInView = useInView(servicesRef, { once: true, amount: 0.05 })
 
   useEffect(() => {
+    setIsClient(true)
+    
     const handleScroll = () => {
       if (window.scrollY > 500) {
         setShowScrollTop(true)
@@ -217,7 +220,7 @@ export default function ServicesPage() {
   ]
 
   return (
-    <div className="pt-24">
+    <div className="pt-24 overflow-x-hidden">
       {/* Hero Section */}
       <section className="relative py-12 md:py-32">
         <div className="container mx-auto px-4">
@@ -254,18 +257,28 @@ export default function ServicesPage() {
         <div className="container mx-auto px-4">
           <div className="space-y-16 md:space-y-24">
             {services.map((service, index) => (
-              <motion.div
+              <div
                 key={service.id}
                 id={service.id}
-                initial={{ opacity: 0, y: 50 }}
-                animate={isServicesInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                className="grid md:grid-cols-2 gap-6 md:gap-12 items-center"
+                className="grid md:grid-cols-2 gap-6 md:gap-12 items-center opacity-0 translate-y-8"
+                style={{
+                  opacity: isClient && isServicesInView ? 1 : 0,
+                  transform: isClient && isServicesInView ? 'translateY(0)' : 'translateY(2rem)',
+                  transition: `opacity 0.5s ease, transform 0.5s ease ${index * 0.05}s`
+                }}
               >
                 <div
-                  className={`relative h-[250px] md:h-[400px] rounded-2xl overflow-hidden shadow-xl ${index % 2 === 1 ? "order-1 md:order-2" : ""}`}
+                  className={`relative rounded-2xl overflow-hidden shadow-xl ${index % 2 === 1 ? "order-1 md:order-2" : ""}`}
+                  style={{ minHeight: "250px", height: "250px" }}
                 >
-                  <Image src={service.image || "/placeholder.svg"} alt={service.title} fill className="object-cover" />
+                  <Image 
+                    src={service.image || "/placeholder.svg"} 
+                    alt={service.title} 
+                    fill 
+                    className="object-cover" 
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    priority={index < 4} // Prioritera laddning av de första 4 bilderna
+                  />
                 </div>
                 <div className={index % 2 === 1 ? "order-2 md:order-1" : ""}>
                   <div className="flex items-center gap-3 mb-3">
@@ -291,7 +304,7 @@ export default function ServicesPage() {
                     <Link href="/booking">{t("bookConsultation")}</Link>
                   </Button>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
