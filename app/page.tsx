@@ -155,7 +155,8 @@ export default function Home() {
         <div className="absolute inset-0 z-0 overflow-hidden">
           {isClient ? (
             <video autoPlay muted loop playsInline className="object-cover w-full h-full">
-              <source src="https://videocdn.cdnpk.net/videos/1c7da48b-fa56-4eca-b24b-56b5054e108a/horizontal/previews/clear/large.mp4?token=exp=1745429732~hmac=8b777fe57fe249344e5d43203dcc97fc446caeec91cb9a9992a5e66033e4ed5b" type="video/mp4" />
+              <source src="/videos/hero.mov" type="video/mp4" />
+              <source src="/videos/hero.mp4" type="video/mp4" />
             </video>
           ) : (
             <div className="w-full h-full bg-background" />
